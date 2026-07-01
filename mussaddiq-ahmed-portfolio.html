@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mussaddiq Ahmed — Network &amp; Cloud Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E13;
+    --panel: #10161F;
+    --panel-border: #1E2A38;
+    --text: #E7EDF3;
+    --muted: #7C8B9B;
+    --amber: #FF8F4C;
+    --cyan: #4FD1E0;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:
+      linear-gradient(var(--bg), var(--bg)),
+      repeating-linear-gradient(0deg, rgba(79,209,224,0.035) 0px, rgba(79,209,224,0.035) 1px, transparent 1px, transparent 48px),
+      repeating-linear-gradient(90deg, rgba(79,209,224,0.035) 0px, rgba(79,209,224,0.035) 1px, transparent 1px, transparent 48px);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection{ background: var(--amber); color: #0A0E13; }
+
+  a{ color: inherit; }
+
+  .wrap{ max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(10,14,19,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--panel-border);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 64px;
+  }
+  .nav-id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .nav-id b{ color: var(--text); font-weight:600; }
+  .nav-links{ display:flex; gap: 28px; list-style:none; }
+  .nav-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration:none;
+    transition: color .2s ease;
+  }
+  .nav-links a:hover{ color: var(--amber); }
+  .nav-links a:focus-visible, a:focus-visible{ outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding: 88px 0 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 40px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size: clamp(38px, 5.2vw, 60px);
+    line-height: 1.05;
+    margin: 14px 0 20px;
+  }
+  .hero h1 .accent{ color: var(--amber); }
+  .hero p.lede{
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 46ch;
+    margin-bottom: 30px;
+  }
+  .hero-tags{
+    display:flex; flex-wrap:wrap; gap: 10px;
+    margin-bottom: 34px;
+  }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    padding: 6px 11px;
+    border: 1px solid var(--panel-border);
+    border-radius: 3px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.015);
+  }
+  .cta-row{ display:flex; gap: 14px; flex-wrap: wrap; }
+  .btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 13px 22px;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items:center;
+    gap: 8px;
+    transition: all .2s ease;
+    border: 1px solid transparent;
+  }
+  .btn-primary{ background: var(--amber); color: #12100C; font-weight: 600; }
+  .btn-primary:hover{ background: #ffa568; }
+  .btn-ghost{ border-color: var(--panel-border); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--cyan); color: var(--cyan); }
+
+  /* ---------- TOPOLOGY SIGNATURE ---------- */
+  .topo-box{
+    position: relative;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(79,209,224,0.04), rgba(255,143,76,0.02));
+    padding: 10px;
+  }
+  .topo-box svg{ width:100%; height:auto; display:block; }
+  .node-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    fill: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .node-label.center{ fill: var(--text); font-size: 10.5px; }
+  .topo-line{
+    stroke: var(--cyan);
+    stroke-width: 1;
+    opacity: 0.35;
+    fill:none;
+  }
+  .packet{
+    fill: var(--amber);
+  }
+  .node-dot{ fill: var(--panel); stroke: var(--cyan); stroke-width: 1.4; }
+  .node-dot.center{ fill: var(--amber); stroke: var(--amber); }
+  .topo-caption{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align:center;
+    padding: 8px 4px 2px;
+    border-top: 1px solid var(--panel-border);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .packet{ animation: none !important; opacity: 0.6; }
+  }
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{ padding: 74px 0; border-top: 1px solid var(--panel-border); }
+  .section-head{ margin-bottom: 38px; }
+  .section-head h2{ font-size: clamp(24px, 3vw, 32px); margin-top: 10px; }
+  .section-head p{ color: var(--muted); max-width: 60ch; margin-top: 10px; }
+
+  /* ---------- SKILLS / ROUTING TABLE ---------- */
+  .route-table{
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .route-row{
+    display: grid;
+    grid-template-columns: 200px 1fr 130px;
+    gap: 18px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--panel-border);
+    align-items: center;
+    transition: background .2s ease;
+  }
+  .route-row:last-child{ border-bottom:none; }
+  .route-row:hover{ background: rgba(79,209,224,0.035); }
+  .route-row .rt-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 15.5px;
+  }
+  .route-row .rt-desc{ color: var(--muted); font-size: 14px; }
+  .route-row .rt-status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--cyan);
+    text-align: right;
+    text-transform: uppercase;
+  }
+  .route-head{
+    display:grid;
+    grid-template-columns: 200px 1fr 130px;
+    gap: 18px;
+    padding: 12px 22px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .route-head span:last-child{ text-align:right; }
+
+  /* ---------- PANEL / CARD ---------- */
+  .panel{
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    background: var(--panel);
+    padding: 30px 30px 28px;
+  }
+  .panel + .panel{ margin-top: 22px; }
+  .panel-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap: 20px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .panel-top h3{ font-size: 21px; }
+  .status-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .status-active{ color: var(--cyan); border: 1px solid rgba(79,209,224,0.4); background: rgba(79,209,224,0.08); }
+  .status-progress{ color: var(--amber); border: 1px solid rgba(255,143,76,0.4); background: rgba(255,143,76,0.08); }
+
+  .panel p.desc{ color: var(--muted); font-size: 15px; margin-bottom: 18px; max-width: 68ch; }
+
+  .kv-block{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    overflow-x:auto;
+  }
+  .kv-block .k{ color: var(--cyan); }
+  .kv-block .line{ white-space: pre; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 16px; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 5px 10px;
+    border: 1px solid var(--panel-border);
+    border-radius: 3px;
+    color: var(--text);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .threat-list{ list-style:none; margin-top: 14px; }
+  .threat-list li{
+    display:flex; gap: 12px; align-items:flex-start;
+    font-size: 14px; color: var(--muted);
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--panel-border);
+  }
+  .threat-list li:last-child{ border-bottom:none; }
+  .threat-list li::before{
+    content:"▲";
+    color: var(--amber);
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .threat-list b{ color: var(--text); }
+
+  .role-grid{
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .role-item{
+    border: 1px solid var(--panel-border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .role-item b{ display:block; color: var(--text); font-size: 13px; margin-bottom: 3px; font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
+
+  .team-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--panel-border);
+  }
+
+  .project-link{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--cyan);
+    text-decoration:none;
+    margin-top: 4px;
+  }
+  .project-link:hover{ color: var(--amber); }
+  .note-inline{ color: var(--muted); font-size: 12px; font-family:'IBM Plex Mono', monospace; margin-top: 6px; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .contact-card{
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    display:flex; align-items:center; gap: 14px;
+    text-decoration:none;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .contact-card:hover{ border-color: var(--cyan); transform: translateY(-2px); }
+  .contact-icon{
+    width: 38px; height: 38px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius: 4px;
+    background: rgba(79,209,224,0.08);
+    border: 1px solid var(--panel-border);
+  }
+  .contact-icon svg{ width:18px; height:18px; stroke: var(--cyan); }
+  .contact-label{ font-family:'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); }
+  .contact-value{ font-size: 14.5px; color: var(--text); word-break: break-word; }
+
+  .tagline-box{
+    margin-top: 26px;
+    border: 1px dashed var(--panel-border);
+    border-radius: 6px;
+    padding: 22px 24px;
+  }
+  .tagline-box .eyebrow{ margin-bottom: 12px; }
+  .tagline-opt{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .tagline-opt:last-child{ border-bottom:none; }
+  .tagline-opt .num{ color: var(--amber); font-family:'IBM Plex Mono', monospace; font-size: 12px; margin-right: 10px; }
+
+  footer{
+    padding: 34px 0 50px;
+    text-align:center;
+    color: var(--muted);
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 860px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .route-row, .route-head{ grid-template-columns: 1fr; gap: 4px; }
+    .route-row .rt-status{ text-align:left; }
+    .role-grid{ grid-template-columns: 1fr; }
+    .contact-grid{ grid-template-columns: 1fr; }
+    .nav-links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-id"><b>M. AHMED</b> // net-sec-cloud</div>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Node status: online</div>
+      <h1>Mussaddiq Ahmed<br><span class="accent">builds and defends</span> infrastructure.</h1>
+      <p class="lede">B.E. CSE student specializing in cloud computing, with hands-on grounding in routing, Linux administration, and hardware — now applying that base to multi-cloud security and air-gapped systems research.</p>
+      <div class="hero-tags">
+        <span class="tag">CCNA CERTIFIED</span>
+        <span class="tag">LINUX ADMINISTRATION</span>
+        <span class="tag">SERVER &amp; HARDWARE OPS</span>
+        <span class="tag">MULTI-OS ENVIRONMENTS</span>
+        <span class="tag">CLOUD COMPUTING</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#projects">View current work</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="topo-box">
+      <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- connecting lines -->
+        <path id="l1" class="topo-line" d="M210,170 C160,130 120,90 80,60"/>
+        <path id="l2" class="topo-line" d="M210,170 C270,120 320,90 360,50"/>
+        <path id="l3" class="topo-line" d="M210,170 C150,190 90,210 50,240"/>
+        <path id="l4" class="topo-line" d="M210,170 C250,210 300,240 350,270"/>
+        <path id="l5" class="topo-line" d="M210,170 C210,220 210,260 210,300"/>
+
+        <!-- packets traveling -->
+        <circle class="packet" r="3.2"><animateMotion dur="3.4s" repeatCount="indefinite" begin="0s"><mpath href="#l1"/></animateMotion></circle>
+        <circle class="packet" r="3.2"><animateMotion dur="3.1s" repeatCount="indefinite" begin="0.5s"><mpath href="#l2"/></animateMotion></circle>
+        <circle class="packet" r="3.2"><animateMotion dur="3.7s" repeatCount="indefinite" begin="1s"><mpath href="#l3"/></animateMotion></circle>
+        <circle class="packet" r="3.2"><animateMotion dur="2.9s" repeatCount="indefinite" begin="1.4s"><mpath href="#l4"/></animateMotion></circle>
+        <circle class="packet" r="3.2"><animateMotion dur="3.3s" repeatCount="indefinite" begin="0.8s"><mpath href="#l5"/></animateMotion></circle>
+
+        <!-- outer nodes -->
+        <circle class="node-dot" cx="80" cy="60" r="7"/>
+        <text class="node-label" x="62" y="42">NETWORKING</text>
+
+        <circle class="node-dot" cx="360" cy="50" r="7"/>
+        <text class="node-label" x="330" y="32">LINUX / SERVERS</text>
+
+        <circle class="node-dot" cx="50" cy="240" r="7"/>
+        <text class="node-label" x="6" y="266">MULTI-OS</text>
+
+        <circle class="node-dot" cx="350" cy="270" r="7"/>
+        <text class="node-label" x="318" y="296">CLOUD SECURITY</text>
+
+        <circle class="node-dot" cx="210" cy="300" r="7"/>
+        <text class="node-label" x="178" y="326">RESEARCH</text>
+
+        <!-- center node -->
+        <circle class="node-dot center" cx="210" cy="170" r="13"/>
+        <text class="node-label center" x="182" y="150">M. AHMED</text>
+      </svg>
+      <div class="topo-caption">live topology — self as root node</div>
+    </div>
+  </div>
+</header>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Foundation</div>
+      <h2>Core skills, mapped like a routing table</h2>
+      <p>What's actually configured and working — not aspirational. Each entry reflects completed training or applied practice, not a course still on the syllabus.</p>
+    </div>
+
+    <div class="route-table">
+      <div class="route-head">
+        <span>Interface</span>
+        <span>Description</span>
+        <span>Status</span>
+      </div>
+      <div class="route-row">
+        <div class="rt-name">CCNA</div>
+        <div class="rt-desc">Routing &amp; switching fundamentals, IP addressing, network troubleshooting.</div>
+        <div class="rt-status">Completed</div>
+      </div>
+      <div class="route-row">
+        <div class="rt-name">Linux Administration</div>
+        <div class="rt-desc">User &amp; permission management, shell scripting, service configuration on Linux systems.</div>
+        <div class="rt-status">Completed</div>
+      </div>
+      <div class="route-row">
+        <div class="rt-name">Server Operations</div>
+        <div class="rt-desc">Server setup, maintenance, and hardware-level troubleshooting.</div>
+        <div class="rt-status">Completed</div>
+      </div>
+      <div class="route-row">
+        <div class="rt-name">Multi-OS Environments</div>
+        <div class="rt-desc">Working comfortably across Windows, Linux, and virtualized OS instances.</div>
+        <div class="rt-status">Completed</div>
+      </div>
+      <div class="route-row">
+        <div class="rt-name">Cloud Computing</div>
+        <div class="rt-desc">Current specialization — multi-cloud architecture, storage, and security models.</div>
+        <div class="rt-status">In progress</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Research paper</div>
+      <h2>Multi-Cloud Data Leakage: Risk Surfaces Across Providers</h2>
+      <p>An examination of how data exposure risk grows when organizations split storage and workloads across AWS, Azure, and GCP for reliability — and where that reliability gain trades off against a wider attack surface.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h3>Abstract</h3>
+        <span class="status-pill status-active">Writing</span>
+      </div>
+      <p class="desc">
+        Data — collected or generated facts and figures — underpins decision-making and prediction, and its storage has shifted from physical media to remote cloud infrastructure accessible over the internet. Cloud storage adds layered encryption, firewalling, and authentication that generally make it more secure than local physical storage, with AWS, Azure, and GCP each carrying their own strengths — enterprise and developer tooling, Microsoft-ecosystem integration, and AI/big-data workloads respectively. Multi-cloud strategies, which split data and workloads across two or more of these platforms, improve reliability: if one provider goes down, workloads shift automatically to keep critical applications running with minimal downtime. That same distribution, however, is what makes data leakage one of the most pressing security concerns in multi-cloud systems — every hop between platforms is a fresh opportunity for exposure.
+      </p>
+
+      <div class="section-head" style="margin-bottom:14px;">
+        <div class="eyebrow" style="margin-bottom:0;">Identified leakage vectors</div>
+      </div>
+      <ul class="threat-list">
+        <li><b>Misconfiguration</b> — storage buckets, permissions, or network rules left open across provider boundaries.</li>
+        <li><b>Over-permissioning</b> — excess user access and shared credentials across teams instead of scoped, individual access.</li>
+        <li><b>Exposed or outdated APIs</b> — unauthorized or legacy API versions left reachable between cloud environments.</li>
+        <li><b>Man-in-the-Middle exposure</b> — sensitive data becoming visible in transit during cloud-to-cloud movement if the network path is monitored.</li>
+      </ul>
+
+      <div class="chip-row">
+        <span class="chip">AWS</span>
+        <span class="chip">Azure</span>
+        <span class="chip">GCP</span>
+        <span class="chip">Multi-Cloud Architecture</span>
+        <span class="chip">Data Leakage Prevention</span>
+        <span class="chip">IEEE Format</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Current work</div>
+      <h2>Projects in progress</h2>
+      <p>Two active builds — one a national hackathon submission, the other a self-directed exploration of AI-assisted app building.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h3>Air-Gapped Predictive Copilot for Secure MPLS Operations</h3>
+        <span class="status-pill status-progress">BAH 2026 · Challenge 13</span>
+      </div>
+      <p class="desc">
+        A predictive operations copilot for MPLS networks that has to work without ever touching an open network. The core problem: how do you give operators useful, model-driven predictions inside an air-gapped boundary while still proving the model itself hasn't been tampered with?
+      </p>
+
+      <div class="kv-block">
+        <div class="line"><span class="k">team_size</span>   = 3</div>
+        <div class="line"><span class="k">my_scope</span>    = air-gap boundary design, threat modeling, crypto integrity, RBAC, audit logging, compliance</div>
+        <div class="line"><span class="k">compliance</span>  = NIST 800-53, CERT-In</div>
+      </div>
+
+      <div class="role-grid">
+        <div class="role-item"><b>Air-gap boundary design</b>Defining how data and models move in and out without breaking isolation.</div>
+        <div class="role-item"><b>Threat modeling</b>Mapping attack paths specific to an isolated MPLS operations environment.</div>
+        <div class="role-item"><b>Cryptographic model integrity</b>Verifying the predictive model hasn't been altered before it's trusted.</div>
+        <div class="role-item"><b>RBAC &amp; audit logging</b>Scoped access control with a traceable record of who did what.</div>
+        <div class="role-item"><b>Compliance framing</b>Mapping the design to NIST 800-53 and CERT-In requirements.</div>
+        <div class="role-item"><b>NOC dashboard visuals</b>Building live-data mockups for the ISRO submission template.</div>
+      </div>
+
+      <div class="team-note">team // 1 security (me) · 1 cloud infrastructure · 1 development</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h3>AI Trading Hub</h3>
+        <span class="status-pill status-active">Shipped (preview)</span>
+      </div>
+      <p class="desc">
+        A trading-focused dashboard concept built by describing the app in prompts on Emergent, which handles the build and deployment. It's an exploration of how far natural-language app building can go for a working prototype — likely covering market data views, simulated trades, or AI-generated signal tracking.
+      </p>
+      <a class="project-link" href="#" target="_blank" rel="noopener">↗ View live preview</a>
+      <div class="note-inline">// swap the href above with your actual preview.emergentagent.com link</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Reach out</div>
+      <h2>Let's connect</h2>
+      <p>Open to conversations on cloud security, networking, or hackathon collaboration.</p>
+    </div>
+
+    <div class="contact-grid">
+      <a class="contact-card" href="tel:+919850817127">
+        <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-value">+91 98508 17127</div>
+        </div>
+      </a>
+
+      <a class="contact-card" href="mailto:mussaddiqahmed365@gmail.com">
+        <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">mussaddiqahmed365@gmail.com</div>
+        </div>
+      </a>
+
+      <a class="contact-card" href="https://www.linkedin.com/in/mussaddiq-ahmed-5b0315385" target="_blank" rel="noopener">
+        <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+        <div>
+          <div class="contact-label">LinkedIn</div>
+          <div class="contact-value">mussaddiq-ahmed</div>
+        </div>
+      </a>
+
+      <a class="contact-card" href="https://github.com/mussaddiqahmed365-sudo" target="_blank" rel="noopener">
+        <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></div>
+        <div>
+          <div class="contact-label">GitHub</div>
+          <div class="contact-value">mussaddiqahmed365-sudo</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="tagline-box">
+      <div class="eyebrow">Personality-based tag — pick one for LinkedIn</div>
+      <div class="tagline-opt"><span class="num">01</span>Systems thinker — securing the path from air-gapped networks to multi-cloud.</div>
+      <div class="tagline-opt"><span class="num">02</span>Grounded in routing tables, reaching for the cloud.</div>
+      <div class="tagline-opt"><span class="num">03</span>Builds infrastructure. Questions its trust boundaries.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 MUSSADDIQ AHMED — LAST CONFIG SYNC: JULY 2026</div>
+</footer>
+
+</body>
+</html>
